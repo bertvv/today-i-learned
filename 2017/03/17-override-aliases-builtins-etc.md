@@ -1,11 +1,8 @@
-+++
-date = "2017-03-17"
-tags = ["Linux", "bash"]
-title = "Override aliases, builtins, etc."
-
-+++
-
 # Override aliases, builtins, etc.
+
+Date: 2017-03-17
+
+Tags: linux, bash
 
 Prepending a command in Bash with `\` will disable lookup to builtins or aliases. E.g.
 
