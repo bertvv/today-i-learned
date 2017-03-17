@@ -1,8 +1,11 @@
+---
+date: '2017-03-16'
+tags:
+  - linux
+  - bash
+---
+
 # About the time command
-
-Date: 2017-03-16
-
-Tags: linux, bash
 
 When you execute the `time` command in Bash, it may not be what you expect (i.e. the `/usr/bin/time` binary), but a shell builtin with more limited features. [This blog post](https://hackernoon.com/usr-bin-time-not-the-command-you-think-you-know-34ac03e55cc3#.xmf4fezev) from Alistair Roche goes into the subject.
 
