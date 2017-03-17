@@ -12,6 +12,10 @@
 #     ...
 #
 # I.e. subdirectories per year/month, and entries per day.
+#
+# Optionally, the script will commit changes and push to Github and/or
+# Post a tweet using the `t` tool <https://github.com/sferik/t>.
+#
 
 #{{{ Bash settings
 # abort on nonzero exitstatus
@@ -26,6 +30,7 @@ readonly script_name=$(basename "${0}")
 readonly script_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 readonly debug_on='yes'
+readonly github_url='https://github.com/bertvv/today-i-learned/tree/master'
 
 # Color definitions
 readonly reset='\e[0m'
@@ -67,19 +72,31 @@ main() {
   create_entry_file "${month_dir}/${entry_file}" "${entry_date}" "${entry_topic}"
   ${EDITOR} "${month_dir}/${entry_file}"
 
-  info "If you’re ready, I’ll commit the entry:"
+  info "If you’re ready, I’ll commit the entry and, optionally, tweet about it."
+  info "If not, enter the commands below after finishing the entry."
   cat <<_EOF_
 git add  "${month_dir}/${entry_file}"
-git commit --message "Added: ${topic}"
+git commit --message "Added entry: ${topic}"
+git push
+
+t update "TIL ${topic} ${github_url}/${month_dir}/${entry_file}"
 _EOF_
 
-  info 'Do you want to proceed? [Y/n]'
-  read -r -n 1 proceed
-  if [ "${proceed}" = 'n' ]; then
+  info 'Commit & push entry? [y/N]'
+  read -r -n 1 commit_entry
+  if [ "${commit_entry}" != 'y' ]; then
     exit 0
   fi
   git add  "${month_dir}/${entry_file}"
-  git commit --message "Added: ${topic}"
+  git commit --message "Added entry: ${topic}"
+  git push
+
+  info "Post tweet? [y/N]"
+  read -r -n 1 post_tweet
+  if [ "${post_tweet}" != 'y' ]; then
+    exit 0
+  fi
+  t update "TIL ${topic} ${github_url}/${month_dir}/${entry_file}"
 }
 
 #{{{ Helper functions
@@ -148,12 +165,11 @@ create_entry_file() {
   topic="${*}"
 
 cat > "${file_name}" << _EOF_
-+++
-date = "${date}"
-tags = ["TAG"]
-title = "${topic}"
-
-+++
+---
+date: '${date}'
+tags:
+  - tag
+---
 
 # ${topic}
 
