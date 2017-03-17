@@ -1,8 +1,10 @@
+---
+date: '2017-03-09'
+tags: 
+  - web
+---
+
 # Viewing website certificate information in Chrome 56
-
-Date: 2017-03-09
-
-Tags: web
 
 Starting with Chrome 56, the certificate information is no longer accessible from the URL bar. Very annoying!
 
