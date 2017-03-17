@@ -142,6 +142,7 @@ title = "${topic}"
 
 # ${topic}
 
+## References
 
 _EOF_
 }
