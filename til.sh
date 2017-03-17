@@ -115,14 +115,17 @@ entry_filename() {
   local day="${1##*-}"
   shift
   local topic
-  topic=$(to_lowercase "${*// /-}")
+  topic=$(title_to_filename "${*}")
   debug "entry_filename() day = ${day}, topic = ${topic}"
 
   printf "%s-%s.md" "${day}" "${topic}"
 }
 
-to_lowercase() {
-  echo "${*}" | tr '[:upper:]' '[:lower:]'
+title_to_filename() {
+  echo "${*}" \
+    | tr '[:upper:]' '[:lower:]' \
+    | tr -d '[:punct:]' \
+    | tr ' ' '-'
 }
 
 # Usage: create_entry_file FILE DATE TOPIC
