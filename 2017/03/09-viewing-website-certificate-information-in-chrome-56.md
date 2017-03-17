@@ -1,9 +1,10 @@
-+++
-date = "2017-03-09"
-tags = ["web"]
-title = "Viewing website certificate information in Chrome 56"
+---
+date: "2017-03-09"
+tags:
+ - "web"
+title: "Viewing website certificate information in Chrome 56"
 
-+++
+---
 
 # Viewing website certificate information in Chrome 56
 
