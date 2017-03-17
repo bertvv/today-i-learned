@@ -66,8 +66,20 @@ main() {
 
   create_entry_file "${month_dir}/${entry_file}" "${entry_date}" "${entry_topic}"
   ${EDITOR} "${month_dir}/${entry_file}"
-  #git add  "${month_dir}/${entry_file}"
-  #git commit --message "Added: ${topic}"
+
+  info "If you’re ready, I’ll commit the entry:"
+  cat <<_EOF_
+git add  "${month_dir}/${entry_file}"
+git commit --message "Added: ${topic}"
+_EOF_
+
+  info 'Do you want to proceed? [Y/n]'
+  read -r -n 1 proceed
+  if [ "${proceed}" = 'n' ]; then
+    exit 0
+  fi
+  git add  "${month_dir}/${entry_file}"
+  git commit --message "Added: ${topic}"
 }
 
 #{{{ Helper functions
