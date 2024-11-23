@@ -28,7 +28,8 @@ set -o pipefail
 
 IFS=$'\t\n'   # Split on newlines and tabs (but not on spaces)
 script_name=$(basename "${0}")
-readonly script_name
+script_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+readonly script_name script_dir
 
 readonly debug_output='yes'
 readonly editor=/usr/bin/code
@@ -72,6 +73,7 @@ main() {
   log "If you’re ready, I’ll commit the entry."
   log "If not, enter the commands below after finishing the entry."
   cat <<_EOF_
+./generate_index.sh
 git add  "${month_dir}/${entry_file}"
 git commit --message "Added entry: ${topic}"
 git push
@@ -83,6 +85,7 @@ _EOF_
   if [ "${commit_entry}" != 'y' ]; then
     exit 0
   fi
+  "${script_dir}"/generate_index.sh
   git add  "${month_dir}/${entry_file}"
   git commit --message "Added entry: ${topic}"
   git push
