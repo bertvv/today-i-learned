@@ -1,4 +1,4 @@
-#! /usr/bin/env bash
+#! /bin/bash
 #
 # Author: Bert Van Vreckem <bert.vanvreckem@gmail.com>
 #
@@ -13,8 +13,7 @@
 #
 # I.e. subdirectories per year/month, and entries per day.
 #
-# Optionally, the script will commit changes and push to Github and/or
-# Post a tweet using the `t` tool <https://github.com/sferik/t>.
+# Optionally, the script will commit changes and push to Github.
 #
 
 #{{{ Bash settings
@@ -26,19 +25,13 @@ set -o nounset
 set -o pipefail
 #}}}
 #{{{ Variables
-readonly script_name=$(basename "${0}")
-readonly script_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
-readonly debug_on='yes'
-readonly github_url='https://github.com/bertvv/today-i-learned/tree/master'
+IFS=$'\t\n'   # Split on newlines and tabs (but not on spaces)
+script_name=$(basename "${0}")
+readonly script_name
 
+readonly debug_output='yes'
 readonly editor=/usr/bin/code
-
-# Color definitions
-readonly reset='\e[0m'
-readonly cyan='\e[0;36m'
-readonly red='\e[0;31m'
-readonly yellow='\e[0;33m'
 
 # Template
 #}}}
@@ -48,34 +41,36 @@ main() {
 
   # Determine entry date
   if [ "${#}" -ge '1' ] && is_iso_date "${1}"; then
-    readonly entry_date="${1}"
+    entry_date="${1}"
     shift
   else
-    readonly entry_date="$(date +'%F')"
+    entry_date="$(date +'%F')"
   fi
+  local entry_date
   debug "Date:  ${entry_date}"
 
   # Determine topic
   if [ "${#}" -ge '1' ]; then
-    readonly entry_topic="${*}"
+    local entry_topic="${*}"
   else
-    info 'No topic specified, please enter one here:'
+    log 'No topic specified, please enter one here:'
     read -r entry_topic
-    readonly entry_topic
+    local entry_topic
   fi
   debug "Topic: ${entry_topic}"
 
-  readonly month_dir=$(month_dir "${entry_date}")
+  local month_dir entry_file
+  month_dir=$(month_dir "${entry_date}")
   ensure_dir_exists "${month_dir}"
 
-  readonly entry_file=$(entry_filename "${entry_date}" "${entry_topic}")
+  entry_file=$(entry_filename "${entry_date}" "${entry_topic}")
   debug "File: ${entry_file}"
 
   create_entry_file "${month_dir}/${entry_file}" "${entry_date}" "${entry_topic}"
   ${editor} "${month_dir}/${entry_file}"
 
-  info "If you’re ready, I’ll commit the entry."
-  info "If not, enter the commands below after finishing the entry."
+  log "If you’re ready, I’ll commit the entry."
+  log "If not, enter the commands below after finishing the entry."
   cat <<_EOF_
 git add  "${month_dir}/${entry_file}"
 git commit --message "Added entry: ${topic}"
@@ -83,7 +78,7 @@ git push
 
 _EOF_
 
-  info 'Commit & push entry? [y/N]'
+  log 'Commit & push entry? [y/N]'
   read -r -n 1 commit_entry
   if [ "${commit_entry}" != 'y' ]; then
     exit 0
@@ -146,8 +141,7 @@ entry_filename() {
 }
 
 title_to_filename() {
-  echo "${*}" \
-    | tr '[:upper:]' '[:lower:]' \
+  echo "${*,,}" \
     | tr -d '[:punct:]' \
     | tr ' ' '-'
 }
@@ -173,26 +167,27 @@ tags:
 _EOF_
 }
 
-# Usage: info [ARG]...
+# Usage: log [ARG]...
 #
-# Prints all arguments on the standard output stream
-info() {
-  printf "${yellow}📑 %s${reset}\n" "${*}"
+# Prints all arguments on stderr, formatted as a log message
+log() {
+  printf '📑 \e[0;33m%s\e[0m\n' "${*}" 1>&2
 }
 
 # Usage: debug [ARG]...
 #
-# Prints all arguments on the standard error stream
+# Prints all arguments on stderr, formatted as a debug message
 debug() {
-  [ "${debug_on}" = 'yes' ] && \
-    printf "${cyan}🪲 %s${reset}\n" "${*}" 1>&2
+  if [ "${debug_output}" = 'yes' ]; then
+    printf '🪲 \e[0;36m%s\e[0m\n' "${*}" 1>&2
+  fi
 }
 
 # Usage: error [ARG]...
 #
-# Prints all arguments on the standard error stream
+# Prints all arguments on stderr, formatted as an error message
 error() {
-  printf "${red}💥 %s${reset}\n" "${*}" 1>&2
+  printf '💥 \e[0;31m%s\e[0m\n' "${*}" 1>&2
 }
 
 # Print usage message on stdout
