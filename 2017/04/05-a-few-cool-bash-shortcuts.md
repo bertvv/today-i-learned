@@ -18,5 +18,3 @@ Yes, I know, there's lists of all Bash shortcuts out there, and I should learn t
 
 - `Ctrl-O`: <https://twitter.com/climagic/status/849645995747094530>
 - `Meta-*`: <https://twitter.com/climagic/status/849678305959829504>
-
-

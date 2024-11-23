@@ -19,7 +19,7 @@ The examples below are based on GNU `time`.
 
 Default output:
 
-```
+```console
 $ /usr/bin/time bash -c "dnf list installed | wc -l"
 5466
 1.33user 0.13system 0:01.48elapsed 98%CPU (0avgtext+0avgdata 102088maxresident)k
@@ -28,7 +28,7 @@ $ /usr/bin/time bash -c "dnf list installed | wc -l"
 
 Portable (POSIX compliant) output:
 
-```
+```console
 $ /usr/bin/time -p bash -c "dnf list installed | wc -l"
 5466
 real 2.38

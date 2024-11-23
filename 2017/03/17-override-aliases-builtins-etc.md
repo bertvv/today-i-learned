@@ -9,7 +9,7 @@ tags:
 
 Prepending a command in Bash with `\` will disable lookup to builtins or aliases. E.g.
 
-```
+```console
 $ \time bash -c "dnf list installed | wc -l"
 5466
 1.32user 0.12system 0:01.45elapsed 99%CPU (0avgtext+0avgdata 97596maxresident)k

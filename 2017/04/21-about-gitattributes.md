@@ -12,7 +12,7 @@ I have created several Vagrant environments for setting up Linux VMs provided ei
 
 When cloning a project, Git will apply the line endings for the local system, i.e. CRLF on Windows, LF on Linux/MacOS. Scripts that are executed using the "shebang" that have Windows line endings won't run and produce an error message similar to:
 
-```
+```console
 $ ./script.sh
 bash: ./script.sh: /bin/bash^M: bad interpreter: No such file or directory
 $ ./script.py
@@ -21,8 +21,8 @@ bash: ./script.py: /usr/bin/python^M: bad interpreter: No such file or directory
 
 I usually instruct Windows users to set the `autocrlf` option when cloning, e.g.:
 
-```
-$ git clone --config core.autocrlf=input https://github.com/bertvv/ansible-skeleton.git
+```console
+$ git clone --config core.autocrlf=input git@github.com:bertvv/ansible-skeleton.git
 ```
 
 However, it happens regularly that this is forgotten and mayhem ensues.
@@ -33,7 +33,7 @@ Turns out, I could have prevented this. Enter `.gitattributes`.
 
 The `.gitattributes` file should be added to the root directory of the repository and contains rules for line endings regardless of `autocrlf` settings.
 
-```
+```console
 # Default behaviour
 * text=auto
 
