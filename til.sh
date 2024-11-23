@@ -32,6 +32,8 @@ readonly script_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 readonly debug_on='yes'
 readonly github_url='https://github.com/bertvv/today-i-learned/tree/master'
 
+readonly editor=/usr/bin/code
+
 # Color definitions
 readonly reset='\e[0m'
 readonly cyan='\e[0;36m'
@@ -70,16 +72,15 @@ main() {
   debug "File: ${entry_file}"
 
   create_entry_file "${month_dir}/${entry_file}" "${entry_date}" "${entry_topic}"
-  ${EDITOR} "${month_dir}/${entry_file}"
+  ${editor} "${month_dir}/${entry_file}"
 
-  info "If you’re ready, I’ll commit the entry and, optionally, tweet about it."
+  info "If you’re ready, I’ll commit the entry."
   info "If not, enter the commands below after finishing the entry."
   cat <<_EOF_
 git add  "${month_dir}/${entry_file}"
 git commit --message "Added entry: ${topic}"
 git push
 
-t update "TIL ${topic} ${github_url}/${month_dir}/${entry_file}"
 _EOF_
 
   info 'Commit & push entry? [y/N]'
@@ -91,12 +92,6 @@ _EOF_
   git commit --message "Added entry: ${topic}"
   git push
 
-  info "Post tweet? [y/N]"
-  read -r -n 1 post_tweet
-  if [ "${post_tweet}" != 'y' ]; then
-    exit 0
-  fi
-  t update "TIL ${topic} ${github_url}/${month_dir}/${entry_file}"
 }
 
 #{{{ Helper functions
@@ -182,7 +177,7 @@ _EOF_
 #
 # Prints all arguments on the standard output stream
 info() {
-  printf "${yellow}>>> %s${reset}\n" "${*}"
+  printf "${yellow}📑 %s${reset}\n" "${*}"
 }
 
 # Usage: debug [ARG]...
@@ -190,14 +185,14 @@ info() {
 # Prints all arguments on the standard error stream
 debug() {
   [ "${debug_on}" = 'yes' ] && \
-    printf "${cyan}### %s${reset}\n" "${*}" 1>&2
+    printf "${cyan}🪲 %s${reset}\n" "${*}" 1>&2
 }
 
 # Usage: error [ARG]...
 #
 # Prints all arguments on the standard error stream
 error() {
-  printf "${red}!!! %s${reset}\n" "${*}" 1>&2
+  printf "${red}💥 %s${reset}\n" "${*}" 1>&2
 }
 
 # Print usage message on stdout
